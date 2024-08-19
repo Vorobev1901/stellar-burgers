@@ -45,7 +45,14 @@ export const LoginUI: FC<LoginUIProps> = ({
             />
           </div>
           <div className={`pb-6 ${styles.button}`}>
-            <Button type='primary' size='medium' htmlType='submit'>
+            <Button
+              type='primary'
+              size='medium'
+              htmlType='submit'
+              disabled={
+                password.length === 0 || email.length === 0 ? true : false
+              }
+            >
               Войти
             </Button>
           </div>
@@ -64,7 +71,7 @@ export const LoginUI: FC<LoginUIProps> = ({
       </div>
       <div className={`${styles.question} text text_type_main-default pb-6`}>
         Забыли пароль?
-        <Link to={'/forgot-password'} className={`pl-2 ${styles.link}`}>
+        <Link to={'/reset-password'} className={`pl-2 ${styles.link}`}>
           Восстановить пароль
         </Link>
       </div>
