@@ -1,11 +1,13 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { TIngredient, TOrder } from '../utils/types';
+import {
+  createSlice,
+  PayloadAction,
+  createAsyncThunk,
+  nanoid
+} from '@reduxjs/toolkit';
+import { TConstructorIngredient, TIngredient, TOrder } from '../utils/types';
 import { orderBurgerApi, TNewOrderResponse } from '@api';
 
-export const newOrder = createAsyncThunk(
-  'burger/newOrder',
-  async (data: string[]) => orderBurgerApi(data)
-);
+export const newOrder = createAsyncThunk('burger/newOrder', orderBurgerApi);
 
 type TBurgerConstructorState = {
   constructorItem: TConstructorItem;
@@ -15,7 +17,7 @@ type TBurgerConstructorState = {
 
 export type TConstructorItem = {
   bun: TIngredient | null;
-  ingredients: TIngredient[];
+  ingredients: TConstructorIngredient[];
 };
 
 const initialState: TBurgerConstructorState = {
@@ -31,15 +33,21 @@ const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
   initialState,
   reducers: {
-    addIngredient: (state, action: PayloadAction<TIngredient>) => {
-      action.payload.type === 'bun'
-        ? (state.constructorItem.bun = action.payload)
-        : state.constructorItem.ingredients.push(action.payload);
+    addIngredient: {
+      reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
+        action.payload.type === 'bun'
+          ? (state.constructorItem.bun = action.payload)
+          : state.constructorItem.ingredients.push(action.payload);
+      },
+      prepare: (ingredient: TIngredient) => {
+        const id = nanoid();
+        return { payload: { ...ingredient, id } };
+      }
     },
-    removeIngredient: (state, action: PayloadAction<number>) => {
+    removeIngredient: (state, action: PayloadAction<string>) => {
       state.constructorItem.ingredients =
         state.constructorItem.ingredients.filter(
-          (ingredient, index) => index !== action.payload
+          (ingredient) => ingredient.id !== action.payload
         );
     },
     moveUpIngredient: (state, action: PayloadAction<number>) => {

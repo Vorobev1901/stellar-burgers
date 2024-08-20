@@ -55,16 +55,9 @@ export const loginUser = createAsyncThunk(
     })
 );
 
-export const getUser = createAsyncThunk(
-  'user/getUser',
-  async () => await getUserApi()
-);
+export const getUser = createAsyncThunk('user/getUser', getUserApi);
 
-export const updateUser = createAsyncThunk(
-  'user/updateUser',
-  async (user: Partial<TRegisterData>) =>
-    await updateUserApi(user).then((data) => data)
-);
+export const updateUser = createAsyncThunk('user/updateUser', updateUserApi);
 
 export const forgotPassword = createAsyncThunk(
   'user/forgotPassword',

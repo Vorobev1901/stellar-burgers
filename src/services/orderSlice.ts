@@ -2,13 +2,11 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { TOrder } from '../utils/types';
 import { getOrderByNumberApi, getOrdersApi, TOrderResponse } from '@api';
 
-export const getOrders = createAsyncThunk('orders/getAll', async () =>
-  getOrdersApi()
-);
+export const getOrders = createAsyncThunk('orders/getAll', getOrdersApi);
 
 export const getOrderByNumber = createAsyncThunk(
   'orders/getByNumber',
-  async (number: number) => getOrderByNumberApi(number)
+  getOrderByNumberApi
 );
 
 type TOrderState = {

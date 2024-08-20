@@ -1,13 +1,11 @@
 import { FC, useMemo } from 'react';
-import { TIngredient, TOrder, TUser } from '@utils-types';
+import { TIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootStore, AppDispatch } from 'src/services/store';
+import { useDispatch, useSelector } from '../../services/store';
 import {
   selectConstructorItem,
   selectOrderRequest,
   selectOderModalData,
-  TConstructorItem,
   newOrder,
   clearConstructor
 } from '../../services/burgerConstructorSlice';
@@ -17,19 +15,15 @@ import { getOrders } from '../../services/orderSlice';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems = useSelector<RootStore, TConstructorItem>(
-    selectConstructorItem
-  );
+  const constructorItems = useSelector(selectConstructorItem);
 
-  const orderRequest = useSelector<RootStore, boolean>(selectOrderRequest);
+  const orderRequest = useSelector(selectOrderRequest);
 
-  const orderModalData = useSelector<RootStore, TOrder | null>(
-    selectOderModalData
-  );
+  const orderModalData = useSelector(selectOderModalData);
 
-  const user = useSelector<RootStore, TUser>(selectUser);
+  const user = useSelector(selectUser);
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const onOrderClick = () => {

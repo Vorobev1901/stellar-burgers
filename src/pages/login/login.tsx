@@ -1,4 +1,4 @@
-import { FC, SyntheticEvent, useEffect, useState } from 'react';
+import { FC, SyntheticEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootStore } from '../../services/store';
@@ -6,18 +6,14 @@ import {
   loginUser,
   selectAuthChecked,
   selectAuthenticated,
-  selectLoginError,
-  selectUser
+  selectLoginError
 } from '../../services/userSlice';
-import { Navigate } from 'react-router-dom';
 import { Preloader } from '@ui';
-import { TUser } from '@utils-types';
 
 export const Login: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const isAuthChecked = useSelector<RootStore, boolean>(selectAuthChecked);
-  const isAuthenticated = useSelector<RootStore, boolean>(selectAuthenticated);
-  const user = useSelector<RootStore, TUser>(selectUser);
+  const isInit = useSelector<RootStore, boolean>(selectAuthenticated);
   const errorText = useSelector<RootStore, string | null>(selectLoginError);
 
   const [email, setEmail] = useState('');
@@ -28,12 +24,8 @@ export const Login: FC = () => {
     if (email && password) dispatch(loginUser({ email, password }));
   };
 
-  if (isAuthChecked || !isAuthenticated) {
+  if (isAuthChecked || !isInit) {
     return <Preloader />;
-  }
-
-  if (user.name !== '' && user.email !== '') {
-    return <Navigate replace to='/' />;
   }
 
   return (

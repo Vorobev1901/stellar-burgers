@@ -13,9 +13,8 @@ import '../../index.css';
 import styles from './app.module.css';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootStore } from '../../services/store';
-import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from '../../services/store';
+import { useEffect } from 'react';
 import {
   getUser,
   init,
@@ -27,15 +26,11 @@ import { getCookie } from '../../utils/cookie';
 import { Preloader } from '@ui';
 import { ProtectedRoute } from '../ProtectedRoute';
 import { getIngredients } from '../../services/ingredientSlice';
-import { getFeeds } from '../../services/feedSlice';
-import { getOrders } from '../../services/orderSlice';
-import { TUser } from '@utils-types';
 
 const App = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const isAuthChecked = useSelector<RootStore, boolean>(selectAuthChecked);
-  const isAuthenticated = useSelector<RootStore, boolean>(selectAuthenticated);
-  const user = useSelector<RootStore, TUser>(selectUser);
+  const dispatch = useDispatch();
+  const isAuthChecked = useSelector(selectAuthChecked);
+  const isInit = useSelector(selectAuthenticated);
 
   const location = useLocation();
   const backgroundLocation = location.state?.background;
@@ -53,7 +48,7 @@ const App = () => {
 
   return (
     <div className={styles.app}>
-      {isAuthChecked || !isAuthenticated ? (
+      {isAuthChecked || !isInit ? (
         <Preloader />
       ) : (
         <>
@@ -69,19 +64,17 @@ const App = () => {
                 <Route index element={<Feed />} />
                 <Route path=':orderNumber' element={<OrderInfo />} />
               </Route>
-              <Route path='login' element={<Login />} />
+              <Route path='login' element={<ProtectedRoute anonymous />}>
+                <Route index element={<Login />} />
+              </Route>
+
+              {/* <Route path='login' element={<Login />} /> */}
               <Route path='register' element={<Register />} />
               <Route path='reset-password' element={<ResetPassword />} />
               <Route path='forgot-password' element={<ForgotPassword />} />
               <Route
                 path='profile'
-                element={
-                  <ProtectedRoute
-                    isAuthChecked={isAuthChecked}
-                    isAuthenticated={isAuthenticated}
-                    user={user}
-                  />
-                }
+                element={<ProtectedRoute anonymous={false} />}
               >
                 <Route index element={<Profile />} />
                 <Route path='orders'>
