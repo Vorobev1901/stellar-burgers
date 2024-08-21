@@ -1,8 +1,7 @@
 import { ProfileOrdersUI } from '@ui-pages';
 import { TOrder } from '@utils-types';
 import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootStore } from '../../services/store';
+import { useDispatch, useSelector } from '../../services/store';
 import {
   getOrders,
   selectIsLoading,
@@ -12,9 +11,9 @@ import { Preloader } from '@ui';
 
 export const ProfileOrders: FC = () => {
   /** TODO: взять переменную из стора */
-  const orders = useSelector<RootStore, TOrder[]>(selectOrders);
-  const ordersIsLoading = useSelector<RootStore, boolean>(selectIsLoading);
-  const dispatch = useDispatch<AppDispatch>();
+  const orders = useSelector(selectOrders);
+  const ordersIsLoading = useSelector(selectIsLoading);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getOrders());

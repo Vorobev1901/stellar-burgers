@@ -1,7 +1,6 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootStore } from '../../services/store';
+import { useSelector, useDispatch } from '../../services/store';
 import {
   loginUser,
   selectAuthChecked,
@@ -11,10 +10,10 @@ import {
 import { Preloader } from '@ui';
 
 export const Login: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const isAuthChecked = useSelector<RootStore, boolean>(selectAuthChecked);
-  const isInit = useSelector<RootStore, boolean>(selectAuthenticated);
-  const errorText = useSelector<RootStore, string | null>(selectLoginError);
+  const dispatch = useDispatch();
+  const isAuthChecked = useSelector(selectAuthChecked);
+  const isInit = useSelector(selectAuthenticated);
+  const errorText = useSelector(selectLoginError);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

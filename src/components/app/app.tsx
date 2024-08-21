@@ -19,8 +19,7 @@ import {
   getUser,
   init,
   selectAuthChecked,
-  selectAuthenticated,
-  selectUser
+  selectAuthenticated
 } from '../../services/userSlice';
 import { getCookie } from '../../utils/cookie';
 import { Preloader } from '@ui';
