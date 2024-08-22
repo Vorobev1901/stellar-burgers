@@ -44,7 +44,14 @@ export const ResetPasswordUI: FC<ResetPasswordUIProps> = ({
           />
         </div>
         <div className={`pb-6 ${styles.button}`}>
-          <Button type='primary' size='medium' htmlType='submit'>
+          <Button
+            type='primary'
+            size='medium'
+            htmlType='submit'
+            disabled={
+              password.length === 0 || token.length === 0 ? true : false
+            }
+          >
             Сохранить
           </Button>
         </div>
