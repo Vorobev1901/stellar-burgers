@@ -9,11 +9,11 @@ import {
   TRegisterData,
   TUserResponse,
   updateUserApi
-} from '@api';
+} from '../utils/burger-api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { deleteCookie, getCookie, setCookie } from '../utils/cookie';
+import { deleteCookie, setCookie } from '../utils/cookie';
 
-type TUserState = {
+export type TUserState = {
   isAuthChecked: boolean;
   isAuthenticated: boolean;
   refreshToken: string;
@@ -70,6 +70,7 @@ export const logoutUser = createAsyncThunk(
     await logoutApi().then((data) => {
       localStorage.removeItem('refreshToken');
       deleteCookie('accessToken');
+      return data;
     })
 );
 
@@ -144,7 +145,7 @@ export const userSlice = createSlice({
           state.name = action.payload.user.name;
         }
       )
-      .addCase(getUser.rejected, (state, action) => {
+      .addCase(getUser.rejected, (state) => {
         state.isAuthChecked = false;
       })
       .addCase(logoutUser.pending, (state) => {
@@ -157,7 +158,7 @@ export const userSlice = createSlice({
         state.email = '';
         state.name = '';
       })
-      .addCase(logoutUser.rejected, (state, action) => {
+      .addCase(logoutUser.rejected, (state) => {
         state.isAuthChecked = false;
       })
       .addCase(updateUser.pending, (state) => {
@@ -168,7 +169,7 @@ export const userSlice = createSlice({
         state.email = action.payload.user.email;
         state.name = action.payload.user.name;
       })
-      .addCase(updateUser.rejected, (state, action) => {
+      .addCase(updateUser.rejected, (state) => {
         state.isAuthChecked = false;
       })
       .addCase(forgotPassword.pending, (state) => {
@@ -177,7 +178,7 @@ export const userSlice = createSlice({
       .addCase(forgotPassword.fulfilled, (state) => {
         state.isAuthChecked = false;
       })
-      .addCase(forgotPassword.rejected, (state, action) => {
+      .addCase(forgotPassword.rejected, (state) => {
         state.isAuthChecked = false;
       });
   }

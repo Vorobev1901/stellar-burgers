@@ -1,15 +1,19 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { TOrder } from '../utils/types';
-import { getOrderByNumberApi, getOrdersApi, TOrderResponse } from '@api';
+import {
+  getOrderByNumberApi,
+  getOrdersApi,
+  TOrderResponse
+} from '../utils/burger-api';
 
 export const getOrders = createAsyncThunk('orders/getAll', getOrdersApi);
 
 export const getOrderByNumber = createAsyncThunk(
   'orders/getByNumber',
-  getOrderByNumberApi
+  async (number: number) => await getOrderByNumberApi(number)
 );
 
-type TOrderState = {
+export type TOrderState = {
   orders: Array<TOrder>;
   isLoading: boolean;
   error: string | null;

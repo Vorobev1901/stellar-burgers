@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "user": {
+      "email": "test1@list.ru",
+      "name": "Никита123"
+  },
+  "accessToken": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MGNjZDcxZDgyOWJlMDAxYzc3NjJlYSIsImlhdCI6MTcyODg5MjI3MywiZXhwIjoxNzI4ODkzNDczfQ.5sOPKilTx5g6i2lzVHvClTwB-n6vRcxbUTLKFxvbakM",
+  "refreshToken": "c81fab175269095f7d7d368a9bcc9f2f450c076453849e77c311b53cdc950f588d47d194b23cd266"
+}

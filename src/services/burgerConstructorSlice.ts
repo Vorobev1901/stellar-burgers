@@ -5,7 +5,7 @@ import {
   nanoid
 } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TIngredient, TOrder } from '../utils/types';
-import { orderBurgerApi, TNewOrderResponse } from '@api';
+import { orderBurgerApi, TNewOrderResponse } from '../utils/burger-api';
 
 export const newOrder = createAsyncThunk('burger/newOrder', orderBurgerApi);
 
