@@ -4,19 +4,11 @@ import {
   addIngredient,
   removeIngredient,
   moveUpIngredient,
-  moveDownIngredient
+  moveDownIngredient,
+  initialState as initialConstructorState
 } from '../services/burgerConstructorSlice';
 
 describe('Проверка редьюсера слайса burgerConstructor', () => {
-  // начальное состояние, которое будем менять в тестах
-  const initialConstructorState = {
-    constructorItem: {
-      bun: null,
-      ingredients: []
-    },
-    orderRequest: false,
-    orderModalData: null
-  };
 
   const fillingIngredient1 = {
     _id: '643d69a5c3f7b9001cfa0941',

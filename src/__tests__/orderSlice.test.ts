@@ -1,7 +1,5 @@
 import { TOrder } from '@utils-types';
-import { getOrders, getOrderByNumber } from '../../src/services/orderSlice';
-import { reducer as orderReducer } from '../../src/services/orderSlice';
-import { TOrderState } from '../../src/services/orderSlice';
+import { getOrders, getOrderByNumber, TOrderState, initialState, reducer as orderReducer } from '../../src/services/orderSlice';
 import { TOrderResponse } from '@api';
 
 describe('Проверка редьюсера слайса order', () => {
@@ -20,13 +18,6 @@ describe('Проверка редьюсера слайса order', () => {
     createdAt: '2024-10-14T07:51:19.729Z',
     updatedAt: '2024-10-14T07:51:20.613Z',
     number: 56440
-  };
-
-  const initialState: TOrderState = {
-    orders: [],
-    isLoading: false,
-    error: null,
-    orderOnView: null
   };
 
   it('Должен установить для isLoading значение true и для error значение null при отправке getOrders.pending', () => {
@@ -205,7 +196,6 @@ describe('Проверка редьюсера слайса order', () => {
       },
       getOrderByNumber.fulfilled(orderResponse, '', orders[0].number)
     );
-
     expect(actualState).toEqual(expectedState);
   });
 
@@ -214,6 +204,7 @@ describe('Проверка редьюсера слайса order', () => {
       ...initialState,
       error: 'test error'
     };
+
     const actualState = orderReducer(
       {
         ...initialState

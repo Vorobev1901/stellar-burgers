@@ -2,95 +2,67 @@ describe('Проверка моковых данных ответа на зап�
 
   const URL = 'https://norma.nomoreparties.space/api';
 
+
   //Перехват запроса на эндпоинт api/ingredients, в ответе на который возвращаются созданные моковые данные из ingredients.json.
   beforeEach(() => {
-    cy.visit('http://localhost:4000/');
+    cy.visit('/');
     cy.intercept("GET", `${URL}/ingredients`, {
       fixture: "ingredients.json",
+    });
+
+    cy.intercept("POST", `${URL}/auth/login`, {
+      fixture: "loginUser.json",
     })
   });
 
   it('Проверка регистрации:', () => {
-
-    // Проверка, что пользователь не авторизован
-    cy.get('header').contains('Личный кабинет');
-
-    cy.visit('http://localhost:4000/register');
-    // Мокирование запроса логина
     cy.intercept("POST", `${URL}/auth/register`, {
       fixture: "registerUser.json",
-    })
-
-    cy.get('input[name="name"]').type('Никита123');
-    cy.get('input[name="email"]').type('test1@list.ru');
-    cy.get('input[name="password"]').type('123456');
-    cy.get('button[type="submit"]').click();
-    cy.location('pathname').should('eq', '/');
-
-    // Проверка, что пользователь авторизован
-    cy.fixture('registerUser').its('user').then((user) => {
-      const name = user.name;
-
-      cy.get('header').contains(name);
     });
 
+    cy.get('header').contains('Личный кабинет');
+    cy.visit('/register');
+
+    // Commands.add - "register"
+    cy.register('Никита123', 'test1@list.ru', '123456');
   });
 
   it('Проверка входа в личный кабинет:', () => {
-
-    // Проверка, что пользователь не авторизован
     cy.get('header').contains('Личный кабинет');
+    cy.visit('/login');
 
-    cy.visit('http://localhost:4000/login');
-    // Мокирование запроса логина
-    cy.intercept("POST", `${URL}/auth/login`, {
-      fixture: "loginUser.json",
-    })
+    // Commands.add - "login"
+    cy.login('test1@list.ru', '123456');
 
-    cy.get('input[name="email"]').type('test1@list.ru');
-    cy.get('input[name="password"]').type('123456');
-    cy.get('button[type="submit"]').click();
-    cy.location('pathname').should('eq', '/');
-
-    // Проверка, что пользователь авторизован
     cy.fixture('loginUser').its('user').then((user) => {
       const name = user.name;
-
       cy.get('header').contains(name);
     });
 
   });
 
   it('Проверка выхода из личного кабинета:', () => {
-    // Мокирование запроса логина
-    cy.intercept("POST", `${URL}/auth/login`, {
-      fixture: "loginUser.json",
-    })
-
     cy.intercept("POST", `${URL}/auth/logout`, {
       fixture: "logoutUser.json",
     })
 
-    // Проверка, что пользователь не авторизован
-    cy.get('header').contains('Личный кабинет');
+    cy.get('header').contains('Личный кабинет').as('buttonProfile');
+    cy.visit('/login');
 
-    cy.visit('http://localhost:4000/login');
-
-    cy.get('input[name="email"]').type('test1@list.ru');
-    cy.get('input[name="password"]').type('123456');
-    cy.get('button[type="submit"]').click();
-    cy.location('pathname').should('eq', '/');
+    // Commands.add - "login"
+    cy.login('test1@list.ru', '123456');
 
     // Проверка, что пользователь авторизован
     cy.fixture('loginUser').its('user').then((user) => {
       const name = user.name;
 
-      // Проверка выхода из лк
-      cy.get('header').contains(name).click();
+      // Commands.add - "clickLink"
+      cy.clickLink(name);
       cy.location('pathname').should('eq', '/profile');
-      cy.get('button').contains('Выход').click();
+      // Commands.add - "clickButton"
+      cy.clickButton('Выход');
       cy.location('pathname').should('eq', '/login');
-      cy.get('header').contains('Личный кабинет');
+      cy.get('@buttonProfile');
     });
 
   });
@@ -101,94 +73,89 @@ describe('Проверяем работу конструктора бургер�
 
   const URL = 'https://norma.nomoreparties.space/api';
 
-  //Перехват запроса на эндпоинт api/ingredients, в ответе на который возвращаются созданные моковые данные из ingredients.json.
   beforeEach(() => {
-    cy.visit('http://localhost:4000/');
+    cy.visit('/');
     cy.intercept("GET", `${URL}/ingredients`, {
       fixture: "ingredients.json",
-    })
-  });
-
-  it('Добавление одного ингредиента, булок и начинок. Оформление заказа', () => {
+    });
     cy.intercept("POST", `${URL}/auth/login`, {
       fixture: "loginUser.json",
     });
-
     cy.intercept("POST", `${URL}/orders`, {
       fixture: "orderBurger.json",
-    })
+    });
+  });
 
-    // Проверка, контструктор пустой
-    cy.get('div').contains('Выберите булки');
-    cy.get('div').contains('Выберите начинку');
+  it('Добавление одного ингредиента, булок и начинок, оформление заказа:', () => {
+
+    cy.get('div').contains('Выберите булки').as('bunEmpty');
+    cy.get('div').contains('Выберите начинку').as('fillingEmpty');
 
     cy.fixture('ingredients').its('data').then((data) => {
       const bunName = data[0].name;
       const bunPrice = data[0].price;
       const bunImage = data[0].image;
-
-      // Проверка, все ингредиенты возвращаются из созданных моковых данных
-      cy.get('ul li:first').contains('p', bunPrice);
-      cy.get('ul li:first').contains('p', bunName);
-      cy.get('ul li:first').find('img').should('have.attr', 'src').should('include', bunImage);
-      // добавление булок по клику
-      cy.get('ul li:first').contains('button', 'Добавить').click();
-
-      // Проверка, что булки добавились в конструктор 
-      cy.get('.constructor-element_pos_top').contains('.constructor-element__text', bunName);
-      cy.get('.constructor-element_pos_top').find('img').should('have.attr', 'src').should('include', bunImage);
-      cy.get('.constructor-element_pos_bottom').contains('.constructor-element__text', bunName);
-      cy.get('.constructor-element_pos_bottom').find('img').should('have.attr', 'src').should('include', bunImage);
-      cy.get('.constructor-element_pos_top').contains('.constructor-element__price', bunPrice);
-      cy.get('.constructor-element_pos_bottom').contains('.constructor-element__price', bunPrice);
-
-      // Проверка, что начинка отображается
-
       const fillingName = data[1].name;
       const fillingPrice = data[1].price;
 
-      cy.get('ul').siblings('h3').contains('Начинки');
-      cy.get('ul').siblings('h3').contains('Начинки').next().find('li:first').contains('p', fillingName);
-      cy.get('ul').siblings('h3').contains('Начинки').next().find('li:first').contains('p', fillingPrice);
-      // добавление начинки по клику
-      cy.get('ul').siblings('h3').contains('Начинки').next().find('li:first').contains('button', 'Добавить').click();
+      cy.get('ul li:first').as('bun');
+      cy.get('@bun').contains('p', bunPrice);
+      cy.get('@bun').contains('p', bunName);
+      cy.get('@bun').find('img').should('have.attr', 'src').should('include', bunImage);
 
-      // Проверка, что начинки добавились в конструктор
+      cy.clickButton('Добавить');
+
+      // Булки отображаются
+      cy.get('.constructor-element_pos_top').as('bunTop');
+      cy.get('.constructor-element_pos_bottom').as('bunBottom');
+
+      cy.get('@bunTop').contains('.constructor-element__text', bunName);
+      cy.get('@bunTop').find('img').should('have.attr', 'src').should('include', bunImage);
+      cy.get('@bunTop').contains('.constructor-element__price', bunPrice);
+
+      cy.get('@bunBottom').contains('.constructor-element__text', bunName);
+      cy.get('@bunBottom').find('img').should('have.attr', 'src').should('include', bunImage);
+      cy.get('@bunBottom').contains('.constructor-element__price', bunPrice);
+
+      // Начинка отображается
+      cy.get('ul').siblings('h3').contains('Начинки').next().find('li:first').as('filling');
+      cy.get('@filling').contains('p', fillingName);
+      cy.get('@filling').contains('p', fillingPrice);
+      // добавление начинки по клику
+      cy.get('@filling').contains('button', 'Добавить').click();
+
+      // Начинки добавились в конструктор
       cy.get('.constructor-element').contains('.constructor-element__text', fillingName);
       cy.get('.constructor-element').contains('.constructor-element__price', fillingPrice);
 
+      // Оформление
+      cy.clickButton('Оформить заказ');
 
-      // Оформление заказа
-      cy.get('button').contains('Оформить заказ').click();
-
-      // Редирект на логин, если не авторизован
+      // Переадресация на страницу личного кабинета
       cy.get('header').contains('Личный кабинет');
-
       cy.location('pathname').should('eq', '/login');
-      // Авторизация
-      cy.get('input[name="email"]').type('test1@list.ru');
-      cy.get('input[name="password"]').type('123456');
-      cy.get('button[type="submit"]').click();
-      cy.location('pathname').should('eq', '/');
 
-      cy.get('button').contains('Оформить заказ').click();
+      // Commands.add - "login"
+      cy.login('test1@list.ru', '123456');
+
+      // Оформление
+      cy.clickButton('Оформить заказ');
       cy.get('#modals').should('not.be.empty');
 
-      // Проверка, верный ли заказ
+      // Номера заказа в модальном окне
       cy.fixture('orderBurger').its('order').then((data) => {
         const number = data.number;
-
         cy.get('#modals h2').should('have.text', number);
       });
 
-      // Проверка закрытия модалки
-      cy.get('#modals button').click();
+      // Закрытие модального окна
+      cy.get('#modals button').click(); 
       cy.get('#modals').should('be.empty');
       cy.location('pathname').should('eq', `/`);
 
-      // Проверка, что контструктор пустой
-      cy.get('div').contains('Выберите булки');
-      cy.get('div').contains('Выберите начинку');
+      // Контструктор пустой
+      cy.get('@bunEmpty');
+      cy.get('@fillingEmpty');
     });
   });
 
@@ -198,42 +165,38 @@ describe('Проверка модального окна', () => {
 
   const URL = 'https://norma.nomoreparties.space/api';
 
-  //Перехват запроса на эндпоинт api/ingredients, в ответе на который возвращаются созданные моковые данные из ingredients.json.
   beforeEach(() => {
-    cy.visit('http://localhost:4000/');
+    cy.visit('/');
     cy.intercept("GET", `${URL}/ingredients`, {
       fixture: "ingredients.json",
     })
   });
 
   it('Проверка работы модального окна ингредиента:', () => {
+    cy.get('ul li:first').as('bun');
+    cy.get('#modals').as('modals');
+    
+    cy.get('@bun').click();
+    cy.get('@modals').should('not.be.empty');
 
-    // открытие модального окна ингредиента:
-    cy.get('ul li:first').click();
-    // проверка, что окно не пустое
-    cy.get('#modals').should('not.be.empty');
-
-    // проверка содержания модального окна
+    // Содержимое модального окна
     cy.fixture('ingredients').its('data').then((data) => {
       const id = data[0]._id;
       const name = data[0].name;
-
       cy.location('pathname').should('eq', `/ingredients/${id}`);
       cy.get('#modals h3:last').should('have.text', name);
     });
 
-    // закрытие по клику на крестик:
+    // Закрытие по клику на крестик
     cy.get('#modals button').click();
-    // проверка, что окно пустое
-    cy.get('#modals').should('be.empty');
+    cy.get('@modals').should('be.empty');
     cy.location('pathname').should('eq', `/`);
 
-    // закрытие по клику на оверлей (желательно):
-    cy.get('ul li:first').click();
-    cy.get('#modals').should('not.be.empty');
-
+    // Закрытие по клику на оверлей
+    cy.get('@bun').click();
+    cy.get('@modals').should('not.be.empty');
     cy.get('#modals div:last').click({ force: true });
-    cy.get('#modals').should('be.empty');
+    cy.get('@modals').should('be.empty');
     cy.location('pathname').should('eq', `/`);
   });
 

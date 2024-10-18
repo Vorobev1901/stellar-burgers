@@ -1,16 +1,8 @@
 import { TOrder } from '@utils-types';
-import { getFeeds, TFeedState } from '../../src/services/feedSlice';
-import { reducer as feedReducer } from '../../src/services/feedSlice';
+import { getFeeds, TFeedState, reducer as feedReducer, initialState  } from '../../src/services/feedSlice';
 import { TFeedsResponse } from '@api';
 
 describe('Проверка редьюсера слайса feed', () => {
-  const initialState: TFeedState = {
-    orders: [],
-    total: 0,
-    totalToday: 0,
-    isLoading: false,
-    error: null
-  };
 
   it('Должен установить для isLoading значение true и для error значение null при отправке getFeeds.pending', () => {
     const expectedState: TFeedState = {

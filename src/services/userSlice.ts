@@ -24,7 +24,7 @@ export type TUserState = {
   registerError: string | null;
 };
 
-const initialState: TUserState = {
+export const initialState: TUserState = {
   isAuthChecked: false,
   isAuthenticated: false,
   refreshToken: '',

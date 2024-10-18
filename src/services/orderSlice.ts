@@ -20,7 +20,7 @@ export type TOrderState = {
   orderOnView: TOrder | null;
 };
 
-const initialState: TOrderState = {
+export const initialState: TOrderState = {
   orders: [],
   isLoading: false,
   error: null,

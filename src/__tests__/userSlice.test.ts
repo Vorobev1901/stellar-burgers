@@ -12,9 +12,10 @@ import {
   logoutUser,
   registerUser,
   TUserState,
-  updateUser
+  updateUser,
+  initialState,
+  reducer as userReducer
 } from '../../src/services/userSlice';
-import { reducer as userReducer } from '../../src/services/userSlice';
 
 describe('Проверка редьюсера слайса user', () => {
   const userRegData: TRegisterData = {
@@ -28,22 +29,12 @@ describe('Проверка редьюсера слайса user', () => {
     password: '123456'
   };
 
-  const initialState: TUserState = {
-    isAuthChecked: false,
-    isAuthenticated: false,
-    refreshToken: '',
-    accessToken: '',
-    email: '',
-    name: '',
-    loginError: null,
-    registerError: null
-  };
-
   it('Должен установить для isAuthChecked значение true и для registerError значение null при отправке registerUser.pending', () => {
     const expectedState: TUserState = {
       ...initialState,
       isAuthChecked: true
     };
+
     const actualState = userReducer(
       {
         ...initialState,
@@ -74,6 +65,7 @@ describe('Проверка редьюсера слайса user', () => {
         name: 'Test'
       }
     };
+
     const actualState = userReducer(
       {
         ...initialState
@@ -88,6 +80,7 @@ describe('Проверка редьюсера слайса user', () => {
       ...initialState,
       registerError: 'test error'
     };
+
     const actualState = userReducer(
       {
         ...initialState
@@ -102,6 +95,7 @@ describe('Проверка редьюсера слайса user', () => {
       ...initialState,
       isAuthChecked: true
     };
+
     const actualState = userReducer(
       {
         ...initialState,
@@ -147,6 +141,7 @@ describe('Проверка редьюсера слайса user', () => {
       ...initialState,
       loginError: 'test error'
     };
+
     const actualState = userReducer(
       {
         ...initialState
@@ -161,6 +156,7 @@ describe('Проверка редьюсера слайса user', () => {
       ...initialState,
       isAuthChecked: true
     };
+
     const actualState = userReducer(
       {
         ...initialState,
@@ -202,6 +198,7 @@ describe('Проверка редьюсера слайса user', () => {
       ...initialState,
       isAuthChecked: true
     };
+
     const actualState = userReducer(
       {
         ...initialState
@@ -244,6 +241,7 @@ describe('Проверка редьюсера слайса user', () => {
       ...initialState,
       isAuthChecked: true
     };
+
     const actualState = userReducer(
       {
         ...initialState
@@ -289,6 +287,7 @@ describe('Проверка редьюсера слайса user', () => {
       ...initialState,
       isAuthChecked: true
     };
+    
     const actualState = userReducer(
       {
         ...initialState

@@ -17,7 +17,7 @@ export type TFeed = {
   totalToday: number;
 };
 
-const initialState: TFeedState = {
+export const initialState: TFeedState = {
   orders: [],
   total: 0,
   totalToday: 0,

@@ -11,12 +11,34 @@
 //
 //
 // -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
+Cypress.Commands.add('clickButton', (title) => {
+  cy.get('button').contains(title).click()
+});
+
+Cypress.Commands.add('clickLink', (label) => {
+  cy.get('a').contains(label).click()
+});
+
+Cypress.Commands.add('register', (name, email, password) => {
+  cy.get('input[name="name"]').type(name);
+  cy.get('input[name="email"]').type(email);
+  cy.get('input[name="password"]').type(password);
+  cy.clickButton('Зарегистрироваться');
+  cy.location('pathname').should('eq', '/');
+  cy.get('header').contains(name);
+});
+
+Cypress.Commands.add('login', (email, password) => {
+  cy.get('input[name="email"]').type(email);
+  cy.get('input[name="password"]').type(password);
+  cy.clickButton('Войти');    
+  cy.location('pathname').should('eq', '/');
+});
 //
 //
 // -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
+// Cypress.Commands.add('drag', { prevSubject: 'element' }, (subject, options) => { })
+// //
 //
 // -- This is a dual command --
 // Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })

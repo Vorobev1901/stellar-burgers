@@ -1,16 +1,12 @@
 import { TIngredient } from '@utils-types';
 import {
   getIngredients,
-  TIngredientState
+  TIngredientState,
+  initialState,
+  reducer as ingredientReducer
 } from '../../src/services/ingredientSlice';
-import { reducer as ingredientReducer } from '../../src/services/ingredientSlice';
 
 describe('Проверка редьюсера слайса ingredient', () => {
-  const initialState: TIngredientState = {
-    ingredients: [],
-    isLoading: false,
-    error: null
-  };
 
   it('Должен установить для isLoading значение true и для error значение null при отправке getIngredients.pending', () => {
     const expectedState: TIngredientState = {
