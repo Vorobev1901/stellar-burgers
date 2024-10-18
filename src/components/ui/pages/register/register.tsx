@@ -59,7 +59,18 @@ export const RegisterUI: FC<RegisterUIProps> = ({
             />
           </div>
           <div className={`pb-6 ${styles.button}`}>
-            <Button type='primary' size='medium' htmlType='submit'>
+            <Button
+              type='primary'
+              size='medium'
+              htmlType='submit'
+              disabled={
+                password.length === 0 ||
+                email.length === 0 ||
+                userName.length === 0
+                  ? true
+                  : false
+              }
+            >
               Зарегистрироваться
             </Button>
           </div>
